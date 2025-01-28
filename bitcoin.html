@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Value Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 250px;
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .result {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bitcoin Value Calculator</h1>
+        <form id="btc-form">
+            <label for="btc-amount">Enter Amount in Bitcoin:</label>
+            <input type="number" id="btc-amount" name="btc-amount" step="any" required>
+            <button type="submit">Calculate</button>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('btc-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            const btcAmount = document.getElementById('btc-amount').value;
+            if (btcAmount <= 0 || isNaN(btcAmount)) {
+                document.getElementById('result').innerHTML = "Please enter a valid number.";
+                return;
+            }
+
+            // Call the CoinDesk API to get the current Bitcoin price
+            fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
+                .then(response => response.json())
+                .then(data => {
+                    const btcPrice = data.bpi.USD.rate_float;
+                    const amountInUsd = btcAmount * btcPrice;
+                    document.getElementById('result').innerHTML = `
+                        The value of ${btcAmount} BTC is: <strong>$${amountInUsd.toFixed(2)}</strong>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerHTML = "Error: Unable to fetch data.";
+                    console.error('Error fetching the CoinDesk API:', error);
+                });
+        });
+    </script>
+</body>
+</html>

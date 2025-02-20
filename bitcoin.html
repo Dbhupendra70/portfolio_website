@@ -84,11 +84,11 @@
             }
 
             // Call the CoinDesk API to get the current Bitcoin price
-            fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
+            fetch('https://api.coincap.io/v2/assets/bitcoin')
                 .then(response => response.json())
                 .then(data => {
-                    const btcPrice = data.bpi.USD.rate_float;
-                    const amountInUsd = btcAmount * btcPrice;
+                    const btcPrice = data.data.priceUsd;
+                    const amountInUsd = btcAmount *  Number(btcPrice);
                     document.getElementById('result').innerHTML = `
                         The value of ${btcAmount} BTC is: <strong>$${amountInUsd.toFixed(2)}</strong>
                     `;
